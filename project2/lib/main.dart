@@ -10,6 +10,7 @@ import 'package:project2/homepage.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
+    name: 'real-estate-project-5a668',
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(RealEstateApp());

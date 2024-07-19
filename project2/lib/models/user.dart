@@ -6,7 +6,6 @@ class User {
   final Timestamp date;
   final Map<String, dynamic> conversations;
   final Map<String, dynamic> properties;
-  String? imageURL;
 
   User(
       {required this.id,
@@ -14,7 +13,7 @@ class User {
       required this.date,
       required this.conversations,
       required this.properties,
-      this.imageURL});
+      });
 
   factory User.fromJson(String id, Map<String, dynamic> data) {
     return User(
@@ -22,8 +21,8 @@ class User {
         username: data["username"],
         date: data["date"],
         conversations: data["conversations"] ?? {},
-        properties: data["properties"] ?? {},
-        imageURL: data["imageURL"] ?? "");
+        properties: data["properties"] ?? {}
+    );
   }
 
   Map<String, dynamic> toJSON() {
@@ -32,7 +31,6 @@ class User {
       "date": date,
       "conversations": conversations,
       "properties": properties,
-      "imageURL": imageURL
     };
   }
 }

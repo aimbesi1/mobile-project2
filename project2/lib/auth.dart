@@ -132,8 +132,8 @@ class LoginFormState extends State<LoginForm> {
                             .set({
                               "username": _usernameController.text,
                               "date": Timestamp.now(),
-                              "conversations": {},
-                              "properties": {},
+                              "conversations": [],
+                              "properties": [],
                             })
                             .then((value) => ScaffoldMessenger.of(context)
                                 .showSnackBar(const SnackBar(

@@ -1,21 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:project2/addproperty.dart';
 import 'package:project2/auth.dart';
 import 'package:project2/propertytile.dart';
-import 'package:project2/sellers.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
 // Placeholder widget for home page
-class HomePage extends StatefulWidget {
+class SellerPage extends StatefulWidget {
   @override
-  HomePageState createState() {
-    return HomePageState();
+  SellerPageState createState() {
+    return SellerPageState();
   }
 }
 
-class HomePageState extends State<HomePage> {
+class SellerPageState extends State<SellerPage> {
   final CollectionReference _properties =
       FirebaseFirestore.instance.collection('properties');
   CollectionReference _filteredProperties =
@@ -26,7 +26,7 @@ class HomePageState extends State<HomePage> {
     return PopScope(
         onPopInvoked: (didPop) => false,
         child: Scaffold(
-          appBar: AppBar(title: const Text("Home Page"), actions: [
+          appBar: AppBar(title: const Text("My Properties"), actions: [
             IconButton(
                 onPressed: () async {
                   await _auth.signOut();
@@ -39,7 +39,7 @@ class HomePageState extends State<HomePage> {
             child: Column(
               children: [
                 Expanded(child: StreamBuilder(
-                  stream: _properties.snapshots(),
+                  stream: _properties.where('sellerID', isEqualTo: _auth.currentUser!.uid).snapshots(),
                   builder:
                       (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
                     if (streamSnapshot.hasData) {
@@ -72,20 +72,16 @@ class HomePageState extends State<HomePage> {
                     onPressed: () {
                       Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => SellerPage()),
+                          MaterialPageRoute(builder: (context) => AddScreen(editMode: true))
                         );
                     },
-                    child: const Text("My Properties")
+                    child: const Text("Add a Property")
                   ),
                 ])
               ],
             ),
           ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {},
-            tooltip: 'Add Item',
-            child: Icon(Icons.add),
-          ),
+          
         ));
   }
 }

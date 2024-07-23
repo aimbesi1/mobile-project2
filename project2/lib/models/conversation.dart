@@ -3,7 +3,7 @@ import 'message.dart';
 
 class Conversation {
   final String id;
-  final List<String> userIDs; // IDs of users in conversation
+  final List<String>? userIDs; // IDs of users in conversation
   final String? lastMessage;
   final Timestamp timestamp;
 
@@ -32,5 +32,20 @@ class Conversation {
       "lastMessage": lastMessage,
       "timestamp": timestamp,
     };
+  }
+
+  factory Conversation.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    SnapshotOptions? options,
+  ) {
+    final data = snapshot.data();
+    return Conversation(
+      id: snapshot.id,
+      lastMessage: data?['lastMessage'],
+      timestamp: data?['timestamp'],
+
+      userIDs:
+          data?['userIDs'] is Iterable ? List.from(data?['userIDs']) : null,
+    );
   }
 }

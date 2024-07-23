@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Property {
   final String id; // Unique property ID
+  final String name;
   final String sellerID; // ID of the seller
   final int sellPrice;
   final String address; 
@@ -18,6 +19,7 @@ class Property {
 
   Property(
       {required this.id,
+      required this.name,
       required this.sellerID,
       required this.sellPrice,
       required this.address,
@@ -36,6 +38,7 @@ class Property {
   factory Property.fromJson(String id, Map<String, dynamic> data) {
     return Property(
         id: id,
+        name: data["name"], 
         sellerID: data["sellerID"],
         sellPrice: data["sellPrice"],
         address: data["address"],
@@ -54,6 +57,50 @@ class Property {
 
   Map<String, dynamic> toJSON() {
     return {
+      "sellerID": sellerID,
+      "name": name,
+      "sellPrice": sellPrice,
+      "address": address,
+      "longitude": longitude,
+      "latitude": latitude,
+      "timestamp": timestamp,
+      "bedrooms": bedrooms,
+      "bathrooms": bathrooms,
+      "floors": floors,
+      "area": area,
+      "hasPool": hasPool,
+      "hasPatio": hasPatio,
+      "imageURL": imageURL
+    };
+  }
+
+  factory Property.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    SnapshotOptions? options,
+  ) {
+    final data = snapshot.data();
+    return Property(
+      id: snapshot.id,
+      name: data?["name"],
+      sellerID: data?["sellerID"],
+      sellPrice: data?["sellPrice"],
+      address: data?["address"],
+      longitude: data?["longitude"],
+      latitude: data?["latitude"],
+      timestamp: data?["timestamp"],
+      bedrooms: data?["bedrooms"],
+      bathrooms: data?["bathrooms"],
+      floors: data?["floors"],
+      area: data?["area"],
+      hasPool: data?["hasPool"],
+      hasPatio: data?["hasPatio"],
+      imageURL: data?["imageURL"] ?? ""
+    );
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      "name": name,
       "sellerID": sellerID,
       "sellPrice": sellPrice,
       "address": address,

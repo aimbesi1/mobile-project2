@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:firebase_ui_storage/firebase_ui_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:project2/models/property.dart';
 import 'package:project2/propertypage.dart';
@@ -13,6 +11,7 @@ class PropertyTile extends StatelessWidget {
     _property = Property.fromJson(pSnapshot.id, pSnapshot.data()!);
   }
 
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {

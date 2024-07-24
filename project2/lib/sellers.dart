@@ -9,6 +9,8 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
 
 // Placeholder widget for home page
 class SellerPage extends StatefulWidget {
+  const SellerPage({super.key});
+
   @override
   SellerPageState createState() {
     return SellerPageState();
@@ -18,7 +20,7 @@ class SellerPage extends StatefulWidget {
 class SellerPageState extends State<SellerPage> {
   final CollectionReference _properties =
       FirebaseFirestore.instance.collection('properties');
-  CollectionReference _filteredProperties =
+  final CollectionReference _filteredProperties =
       FirebaseFirestore.instance.collection('properties');
 
   @override
@@ -31,9 +33,9 @@ class SellerPageState extends State<SellerPage> {
                 onPressed: () async {
                   await _auth.signOut();
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => LoginForm()));
+                      MaterialPageRoute(builder: (context) => const LoginForm()));
                 },
-                icon: Icon(Icons.exit_to_app))
+                icon: const Icon(Icons.exit_to_app))
           ]),
           body: Center(
             child: Column(
@@ -72,7 +74,7 @@ class SellerPageState extends State<SellerPage> {
                     onPressed: () {
                       Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => AddScreen(editMode: true))
+                          MaterialPageRoute(builder: (context) => const AddScreen(editMode: true))
                         );
                     },
                     child: const Text("Add a Property")

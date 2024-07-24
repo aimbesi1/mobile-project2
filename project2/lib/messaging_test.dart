@@ -13,10 +13,12 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FirebaseMessaging.onBackgroundMessage(_messageHandler);
-  runApp(MessagingTutorial());
+  runApp(const MessagingTutorial());
 }
 
 class MessagingTutorial extends StatelessWidget {
+  const MessagingTutorial({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -25,13 +27,13 @@ class MessagingTutorial extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Firebase Messaging'),
+      home: const MyHomePage(title: 'Firebase Messaging'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, this.title}) : super(key: key);
+  const MyHomePage({super.key, this.title});
   final String? title;
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -56,11 +58,11 @@ class _MyHomePageState extends State<MyHomePage> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text("Notification"),
+              title: const Text("Notification"),
               content: Text(event.notification!.body!),
               actions: [
                 TextButton(
-                  child: Text("Ok"),
+                  child: const Text("Ok"),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -80,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title!),
       ),
-      body: Center(child: Text("Messaging Tutorial")),
+      body: const Center(child: Text("Messaging Tutorial")),
     );
   }
 }

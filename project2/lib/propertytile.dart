@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:project2/models/property.dart';
+import 'package:project2/propertypage.dart';
 
 class PropertyTile extends StatelessWidget {
 
@@ -12,7 +13,13 @@ class PropertyTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context, MaterialPageRoute(builder: (context) => PropertyPage(_property))
+        );
+      },
+      child: Container(
       child: Column(
         children: [
           Expanded(
@@ -26,9 +33,10 @@ class PropertyTile extends StatelessWidget {
           Container(
             color: Theme.of(context).colorScheme.secondary,
             child: Text(_property.name)
-          )
-        ]
-      )
+          ),
+        ],
+      ),
+      ),
     );
   }
 }

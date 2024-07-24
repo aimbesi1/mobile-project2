@@ -43,7 +43,7 @@ class DatabaseHelper {
         "properties": properties
       });
 
-      
+
       return true;
     }
     catch (e) {
@@ -109,5 +109,41 @@ class DatabaseHelper {
     var downloadUrl = await (await uploadTask).ref.getDownloadURL();
 
     return downloadUrl.toString();
+  }
+
+
+
+  Future<Conversation> startConversation(String otherID) async {
+    final existingConvo = (await _conversations
+      .where("userIDs", arrayContains: _auth.currentUser!.uid)
+      .where("userIDs", arrayContains: otherID)
+      .limit(1)
+      .get())
+      .docs;
+    
+    if (existingConvo.isEmpty) {
+      final ref = await _conversations.add(Conversation(
+        id: "",
+        userIDs: [_auth.currentUser!.uid, otherID],
+        lastMessage: "",
+        timestamp: Timestamp.now()
+      ).toJSON());
+
+      final docSnap = await ref.get();
+
+      final data = docSnap.data() as Map<String, dynamic>;
+
+      final convoObj = {
+        "id": docSnap.id,
+        "userIDs": data["userIDs"]!,
+        "lastMessage": data["lastMessage"],
+        "timestamp": data["timestamp"]
+      };
+
+      return Conversation.fromJson(convoObj['id'], convoObj);
+    }
+    else {
+      return Conversation.fromJson(existingConvo.first.id, existingConvo.first.data() as Map<String, dynamic>);
+    }
   }
 }

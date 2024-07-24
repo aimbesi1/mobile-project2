@@ -4,11 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:project2/auth.dart';
 import 'package:project2/propertytile.dart';
 import 'package:project2/sellers.dart';
+import 'package:project2/conversation_list_screen.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
 // Placeholder widget for home page
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   HomePageState createState() {
     return HomePageState();
@@ -18,11 +21,13 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   final CollectionReference _properties =
       FirebaseFirestore.instance.collection('properties');
-  CollectionReference _filteredProperties =
+  final CollectionReference _filteredProperties =
       FirebaseFirestore.instance.collection('properties');
 
   @override
   Widget build(BuildContext context) {
+    final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+
     return PopScope(
         onPopInvoked: (didPop) => false,
         child: Scaffold(
@@ -31,13 +36,26 @@ class HomePageState extends State<HomePage> {
                 onPressed: () async {
                   await _auth.signOut();
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => LoginForm()));
+                      MaterialPageRoute(builder: (context) => const LoginForm()));
                 },
-                icon: Icon(Icons.exit_to_app))
+                icon: const Icon(Icons.exit_to_app))
           ]),
           body: Center(
             child: Column(
               children: [
+                // Button for going to conversations screen feel free to move later
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ConversationsListScreen(currentUserId: currentUserId),
+                      ),
+                    );
+                  },
+                  child: Text("Conversations"),
+                ),
+
                 Expanded(child: StreamBuilder(
                   stream: _properties.snapshots(),
                   builder:
@@ -72,7 +90,7 @@ class HomePageState extends State<HomePage> {
                     onPressed: () {
                       Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => SellerPage()),
+                          MaterialPageRoute(builder: (context) => const SellerPage()),
                         );
                     },
                     child: const Text("My Properties")
@@ -84,7 +102,7 @@ class HomePageState extends State<HomePage> {
           floatingActionButton: FloatingActionButton(
             onPressed: () {},
             tooltip: 'Add Item',
-            child: Icon(Icons.add),
+            child: const Icon(Icons.add),
           ),
         ));
   }

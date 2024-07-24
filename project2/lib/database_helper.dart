@@ -4,12 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:project2/models/conversation.dart';
-import 'package:project2/models/message.dart';
 import 'package:project2/models/property.dart';
-import 'package:project2/models/user.dart';
+import 'package:rxdart/rxdart.dart';
 
 class DatabaseHelper {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -109,5 +106,78 @@ class DatabaseHelper {
     var downloadUrl = await (await uploadTask).ref.getDownloadURL();
 
     return downloadUrl.toString();
+  }
+
+  Future<void> createConversation(String recipientId, String recipientName) async {
+    try {
+      final String senderId = _auth.currentUser!.uid;
+
+      // Retrieve sender's username from Firestore
+      DocumentSnapshot userDoc = await _users.doc(senderId).get();
+      String senderName = userDoc.get('username') ?? 'Unknown';
+
+      await _conversations.add({
+        'senderId': senderId,
+        'senderName': senderName,
+        'recipientId': recipientId,
+        'recipientName': recipientName,
+        'participants': [senderId, recipientId],
+        'lastMessage': '',
+        'timestamp': Timestamp.now(),
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> sendMessage(String conversationId, String text) async {
+    try {
+      final String senderId = _auth.currentUser!.uid;
+
+      // Retrieve sender's username from Firestore
+      DocumentSnapshot userDoc = await _users.doc(senderId).get();
+      String senderName = userDoc.get('username') ?? 'Unknown';
+
+      print('Sending message from $senderName ($senderId): $text');
+
+      await _conversations.doc(conversationId).collection('messages').add({
+        'text': text,
+        'senderId': senderId,
+        'senderName': senderName,
+        'timestamp': Timestamp.now(),
+      });
+
+      await _conversations.doc(conversationId).update({
+        'lastMessage': text,
+        'timestamp': Timestamp.now(),
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Stream<QuerySnapshot> getConversations(String userId) {
+    return _conversations
+        .where('participants', arrayContains: userId)
+        .orderBy('timestamp', descending: true)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> getMessages(String conversationId) {
+    return _conversations.doc(conversationId).collection('messages').orderBy('timestamp').snapshots();
+  }
+
+  Stream<QuerySnapshot> searchUsers(String query) {
+    return _users.where('username', isGreaterThanOrEqualTo: query)
+        .where('username', isLessThanOrEqualTo: query + '\uf8ff')
+        .snapshots();
+  }
+
+  Future<void> deleteConversation(String conversationId) async {
+    try {
+      await _conversations.doc(conversationId).delete();
+    } catch (e) {
+      print(e);
+    }
   }
 }

@@ -47,7 +47,7 @@ class AddScreenState extends State<AddScreen> {
             Expanded(
               child: Center(
                 child: _image == null
-                    ? Text('No image selected.')
+                    ? const Text('No image selected.')
                     : Image.file(_image!),
               ),
             ),
@@ -60,7 +60,7 @@ class AddScreenState extends State<AddScreen> {
                             });
                            }
                          },
-                   child: Text('Select image'),
+                   child: const Text('Select image'),
             ),
             TextFormField(
               controller: _titleController,
@@ -73,7 +73,7 @@ class AddScreenState extends State<AddScreen> {
                 }
                 return null;
               },
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: UnderlineInputBorder(),
                 labelText: "Title",
               ),

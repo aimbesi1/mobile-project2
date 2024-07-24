@@ -1,6 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:project2/auth.dart';
 import 'package:project2/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,11 +12,11 @@ void main() async {
     name: 'real-estate-project-5a668',
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(RealEstateApp());
+  runApp(const RealEstateApp());
 }
 
 class RealEstateApp extends StatelessWidget {
-  const RealEstateApp({Key? key}) : super(key: key);
+  const RealEstateApp({super.key});
 
   // final Future<FirebaseApp> _initFirebase = Firebase.initializeApp();
 
@@ -32,16 +31,16 @@ class RealEstateApp extends StatelessWidget {
         initialRoute: '/',
         routes: {
           '/': (context) {
-            final FirebaseAuth _auth = FirebaseAuth.instance;
-            _auth.idTokenChanges().listen((event) {});
-            if (_auth.currentUser == null) {
-              return LoginForm();
+            final FirebaseAuth auth = FirebaseAuth.instance;
+            auth.idTokenChanges().listen((event) {});
+            if (auth.currentUser == null) {
+              return const LoginForm();
             } else {
-              return HomePage();
+              return const HomePage();
             }
           },
-          '/auth': (context) => LoginForm(),
-          '/home': (context) => HomePage(),
+          '/auth': (context) => const LoginForm(),
+          '/home': (context) => const HomePage(),
         });
   }
 }

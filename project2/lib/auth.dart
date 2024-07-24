@@ -1,10 +1,7 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:project2/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:project2/homepage.dart';
-import 'package:project2/database_helper.dart';
+import 'package:project2/homepage.dart';git 
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -29,7 +26,7 @@ final FirebaseFirestore _db = FirebaseFirestore.instance;
 // }
 
 class LoginForm extends StatefulWidget {
-  LoginForm({super.key});
+  const LoginForm({super.key});
 
   @override
   LoginFormState createState() {
@@ -65,7 +62,7 @@ class LoginFormState extends State<LoginForm> {
                 }
                 return null;
               },
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: UnderlineInputBorder(),
                 labelText: "Email",
               ),
@@ -101,7 +98,7 @@ class LoginFormState extends State<LoginForm> {
                 }
                 return null;
               },
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: UnderlineInputBorder(),
                 labelText: "Password",
               ),
@@ -145,7 +142,7 @@ class LoginFormState extends State<LoginForm> {
                         // if (!Navigator.of(context).canPop()) {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => HomePage()),
+                          MaterialPageRoute(builder: (context) => const HomePage()),
                         );
                         // }
                       } on FirebaseAuthException catch (e) {
@@ -180,7 +177,7 @@ class LoginFormState extends State<LoginForm> {
 
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => HomePage()),
+                          MaterialPageRoute(builder: (context) => const HomePage()),
                         );
                         // }
                       } on FirebaseAuthException catch (e) {

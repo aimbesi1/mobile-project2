@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'chat_screen.dart';
 import 'database_helper.dart';
+import 'package:project2/models/conversation.dart';
 
 class ConversationsListScreen extends StatefulWidget {
   final String currentUserId;
@@ -13,7 +15,8 @@ class ConversationsListScreen extends StatefulWidget {
 }
 
 class _ConversationsListScreenState extends State<ConversationsListScreen> {
-  final DatabaseHelper dbHelper = DatabaseHelper();
+  final DatabaseHelper _dbHelper = DatabaseHelper();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final TextEditingController _searchController = TextEditingController();
   String searchQuery = '';
 
@@ -46,7 +49,7 @@ class _ConversationsListScreenState extends State<ConversationsListScreen> {
           searchQuery.isNotEmpty
               ? Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: dbHelper.searchUsers(searchQuery),
+              stream: _dbHelper.searchUsers(searchQuery),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return Center(child: CircularProgressIndicator());
@@ -63,13 +66,26 @@ class _ConversationsListScreenState extends State<ConversationsListScreen> {
                     final userName = userData.containsKey('username') ? userData['username'] : 'No Username';
                     return ListTile(
                       title: Text(userName),
-                      onTap: () async {
-                        await dbHelper.createConversation(user.id, userName);
-                        setState(() {
-                          searchQuery = '';
-                          _searchController.clear();
-                        });
-                      },
+                        onTap: () async {
+                          if (user.id != _auth.currentUser!.uid && userName != null) {
+                            Conversation? conversation = await _dbHelper.createConversation(user.id, userName);
+                            if (conversation != null) {
+                              if (!context.mounted) return;
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ChatScreen(
+                                    conversationId: conversation.id,
+                                  ),
+                                ),
+                              );
+                            }
+                          }
+                          setState(() {
+                            searchQuery = '';
+                            _searchController.clear();
+                          });
+                        }
                     );
                   },
                 );
@@ -78,7 +94,7 @@ class _ConversationsListScreenState extends State<ConversationsListScreen> {
           )
               : Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: dbHelper.getConversations(widget.currentUserId),
+              stream: _dbHelper.getConversations(widget.currentUserId),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return Center(child: CircularProgressIndicator());
@@ -102,7 +118,7 @@ class _ConversationsListScreenState extends State<ConversationsListScreen> {
                       key: Key(conversation.id),
                       direction: DismissDirection.endToStart,
                       onDismissed: (direction) async {
-                        await dbHelper.deleteConversation(conversation.id);
+                        await _dbHelper.deleteConversation(conversation.id);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Conversation deleted')),
                         );

@@ -7,6 +7,7 @@ import 'package:project2/chat_screen.dart';
 import 'package:project2/database_helper.dart';
 import 'package:project2/models/conversation.dart';
 import 'package:project2/models/property.dart';
+import 'package:project2/tour.dart';
 
 class PropertyPage extends StatefulWidget {
   late final Property property;
@@ -73,7 +74,24 @@ class PropertyPageState extends State<PropertyPage> {
                   child: Container(
                       color: Theme.of(context).colorScheme.secondary,
                       child: Text("Seller: ${sellerName ?? "Loading"}")))
-            ])
+            ]),
+
+          ButtonBar(
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                StreetViewScreen(latitude: widget.property.latitude, longitude: widget.property.longitude)
+                          ),
+                        );
+                },
+                child: const Text("View Area")
+              )
+            ]
+          )
           ],
         ),
       ),

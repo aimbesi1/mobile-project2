@@ -23,10 +23,14 @@ class HomePageState extends State<HomePage> {
       FirebaseFirestore.instance.collection('properties');
   final CollectionReference _filteredProperties =
       FirebaseFirestore.instance.collection('properties');
+  final String currentUserId = _auth.currentUser!.uid;
+
+  final TextEditingController _searchController = TextEditingController();
+  String searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
-    final String currentUserId = _auth.currentUser!.uid;
+    
 
     return PopScope(
         onPopInvoked: (didPop) => false,
@@ -55,7 +59,7 @@ class HomePageState extends State<HomePage> {
                   },
                   child: Text("Conversations"),
                 ),
-
+                
                 Expanded(child: StreamBuilder(
                   stream: _properties.snapshots(),
                   builder:

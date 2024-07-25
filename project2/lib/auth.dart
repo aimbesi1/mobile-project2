@@ -140,6 +140,7 @@ class LoginFormState extends State<LoginForm> {
                                     SnackBar(content: Text("FAILED. $error"))));
 
                         // if (!Navigator.of(context).canPop()) {
+                        if (!context.mounted) return;
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(builder: (context) => const HomePage()),

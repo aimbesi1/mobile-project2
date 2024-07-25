@@ -45,7 +45,6 @@ dependencies:
   firebase_ui_storage: ^2.0.5
   path_provider: ^2.1.3
   image_picker: ^1.1.2
-  rxdart: ^0.27.3
 
 dev_dependencies:
   flutter_test:

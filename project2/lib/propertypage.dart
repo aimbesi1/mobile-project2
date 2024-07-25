@@ -3,12 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_ui_storage/firebase_ui_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:project2/chat_screen.dart';
 import 'package:project2/database_helper.dart';
+import 'package:project2/models/conversation.dart';
 import 'package:project2/models/property.dart';
 
 class PropertyPage extends StatefulWidget {
   late final Property property;
-  
+
   PropertyPage(Property p, {super.key}) {
     property = p;
   }
@@ -51,9 +53,21 @@ class PropertyPageState extends State<PropertyPage> {
             Row(children: [
               Text("Price: \$${widget.property.sellPrice}"),
               GestureDetector(
-                  onTap: () {
-                    if (widget.property.sellerID != _auth.currentUser!.uid) {
-                      _dh.startConversation(widget.property.sellerID);
+                  onTap: () async {
+                    if (widget.property.sellerID != _auth.currentUser!.uid &&
+                        sellerName != null) {
+                      Conversation? conversation = await _dh.createConversation(
+                          widget.property.sellerID, sellerName!);
+                      if (conversation != null) {
+                        if (!context.mounted) return;
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ChatScreen(conversationId: conversation.id),
+                          ),
+                        );
+                      }
                     }
                   },
                   child: Container(

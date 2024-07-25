@@ -26,7 +26,7 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+    final String currentUserId = _auth.currentUser!.uid;
 
     return PopScope(
         onPopInvoked: (didPop) => false,

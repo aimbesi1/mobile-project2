@@ -5,8 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:project2/models/conversation.dart';
 import 'package:project2/models/property.dart';
-import 'package:rxdart/rxdart.dart';
 
 class DatabaseHelper {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -22,28 +22,24 @@ class DatabaseHelper {
 
   final storageRef = FirebaseStorage.instance.ref();
 
-
   Future<bool> addNewProperty(Property p) async {
     try {
-
-      // Add property to 'properties' collection, then add ID of the property document 
+      // Add property to 'properties' collection, then add ID of the property document
       // to the 'properties' array of the doc in 'users' belonging to the current user
 
       DocumentReference pRef = await _properties.add(p.toJSON());
-    
+
       DocumentSnapshot user = await _users.doc(_auth.currentUser!.uid).get();
 
       List<String> properties = user['properties'] as List<String>;
       properties.add(pRef.id);
 
-      await _users.doc(_auth.currentUser!.uid).update({
-        "properties": properties
-      });
-
+      await _users
+          .doc(_auth.currentUser!.uid)
+          .update({"properties": properties});
 
       return true;
-    }
-    catch (e) {
+    } catch (e) {
       debugPrint(e.toString());
       return false;
     }
@@ -99,34 +95,52 @@ class DatabaseHelper {
   // }
 
   Future<String> addImage(File image) async {
-    final appDocDir = await getApplicationDocumentsDirectory();
+    // final appDocDir = await getApplicationDocumentsDirectory();
     String imageName = DateTime.now().millisecondsSinceEpoch.toString();
-    var uploadTask = storageRef.child('images/$imageName.jpg')
-      .putFile(image);
+    var uploadTask = storageRef.child('images/$imageName.jpg').putFile(image);
     var downloadUrl = await (await uploadTask).ref.getDownloadURL();
 
     return downloadUrl.toString();
   }
 
-  Future<void> createConversation(String recipientId, String recipientName) async {
+  Future<Conversation?> createConversation(
+      String recipientId, String recipientName) async {
     try {
-      final String senderId = _auth.currentUser!.uid;
+      final existingConvo = (await _conversations
+        .where("participants", arrayContains: _auth.currentUser!.uid)
+        .get())
+        .docs
+        .where((doc) => doc["participants"].contains(recipientId))
+        .toList();
 
-      // Retrieve sender's username from Firestore
-      DocumentSnapshot userDoc = await _users.doc(senderId).get();
-      String senderName = userDoc.get('username') ?? 'Unknown';
+      if (existingConvo.isNotEmpty) {
+        return Conversation.fromJson(existingConvo.first.id,
+            existingConvo.first.data() as Map<String, dynamic>);
+      } else {
+        final String senderId = _auth.currentUser!.uid;
 
-      await _conversations.add({
-        'senderId': senderId,
-        'senderName': senderName,
-        'recipientId': recipientId,
-        'recipientName': recipientName,
-        'participants': [senderId, recipientId],
-        'lastMessage': '',
-        'timestamp': Timestamp.now(),
-      });
+        // Retrieve sender's username from Firestore
+        DocumentSnapshot userDoc = await _users.doc(senderId).get();
+        String senderName = userDoc.get('username') ?? 'Unknown';
+
+        DocumentReference ref = await _conversations.add({
+          'senderId': senderId,
+          'senderName': senderName,
+          'recipientId': recipientId,
+          'recipientName': recipientName,
+          'participants': [senderId, recipientId],
+          'lastMessage': '',
+          'timestamp': Timestamp.now(),
+        });
+
+        final snapshot = await ref.get();
+
+        return Conversation.fromJson(
+            snapshot.id, snapshot.data() as Map<String, dynamic>);
+      }
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
+      return null;
     }
   }
 
@@ -138,7 +152,7 @@ class DatabaseHelper {
       DocumentSnapshot userDoc = await _users.doc(senderId).get();
       String senderName = userDoc.get('username') ?? 'Unknown';
 
-      print('Sending message from $senderName ($senderId): $text');
+      debugPrint('Sending message from $senderName ($senderId): $text');
 
       await _conversations.doc(conversationId).collection('messages').add({
         'text': text,
@@ -152,7 +166,7 @@ class DatabaseHelper {
         'timestamp': Timestamp.now(),
       });
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
   }
 
@@ -164,12 +178,17 @@ class DatabaseHelper {
   }
 
   Stream<QuerySnapshot> getMessages(String conversationId) {
-    return _conversations.doc(conversationId).collection('messages').orderBy('timestamp').snapshots();
+    return _conversations
+        .doc(conversationId)
+        .collection('messages')
+        .orderBy('timestamp')
+        .snapshots();
   }
 
   Stream<QuerySnapshot> searchUsers(String query) {
-    return _users.where('username', isGreaterThanOrEqualTo: query)
-        .where('username', isLessThanOrEqualTo: query + '\uf8ff')
+    return _users
+        .where('username', isGreaterThanOrEqualTo: query)
+        .where('username', isLessThanOrEqualTo: '$query\uf8ff')
         .snapshots();
   }
 
@@ -177,18 +196,18 @@ class DatabaseHelper {
     try {
       await _conversations.doc(conversationId).delete();
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
+    }
+  }
 
+  // Future<Conversation> startConversation(String otherID) async {
+  //   final existingConvo = (await _conversations
+  //     .where("userIDs", arrayContains: _auth.currentUser!.uid)
+  //     .where("userIDs", arrayContains: otherID)
+  //     .limit(1)
+  //     .get())
+  //     .docs;
 
-
-//   Future<Conversation> startConversation(String otherID) async {
-//     final existingConvo = (await _conversations
-//       .where("userIDs", arrayContains: _auth.currentUser!.uid)
-//       .where("userIDs", arrayContains: otherID)
-//       .limit(1)
-//       .get())
-//       .docs;
-    
 //     if (existingConvo.isEmpty) {
 //       final ref = await _conversations.add(Conversation(
 //         id: "",

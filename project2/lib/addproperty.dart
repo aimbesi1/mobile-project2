@@ -116,13 +116,14 @@ class AddScreenState extends State<AddScreen> {
                             ));
 
                         
-                        
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(
-                                    content: Text('Added property successfully')));
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context)
+                          .showSnackBar(const SnackBar(
+                              content: Text('Added property successfully')));
                             
 
                         // if (!Navigator.of(context).canPop()) {
+                        // if (!context.mounted) return;
                         Navigator.of(context).pop();
                         // }
                       } catch (e) {

@@ -263,18 +263,7 @@ class HomePageState extends State<HomePage> {
         body: Center(
           child: Column(
             children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          ConversationsListScreen(currentUserId: currentUserId),
-                    ),
-                  );
-                },
-                child: const Text("Conversations"),
-              ),
+              
               Expanded(
                 child: GridView.builder(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -293,6 +282,18 @@ class HomePageState extends State<HomePage> {
               ),
               ButtonBar(
                 children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ConversationsListScreen(currentUserId: currentUserId),
+                        ),
+                      );
+                    },
+                    child: const Text("Conversations"),
+                  ),
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(

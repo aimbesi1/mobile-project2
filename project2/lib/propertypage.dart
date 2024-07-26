@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_ui_storage/firebase_ui_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:project2/addproperty.dart';
 import 'package:project2/chat_screen.dart';
 import 'package:project2/database_helper.dart';
 import 'package:project2/models/conversation.dart';
@@ -76,22 +77,39 @@ class PropertyPageState extends State<PropertyPage> {
                       child: Text("Seller: ${sellerName ?? "Loading"}")))
             ]),
 
-          ButtonBar(
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                StreetViewScreen(latitude: widget.property.latitude, longitude: widget.property.longitude)
+            ButtonBar(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => StreetViewScreen(
+                            latitude: widget.property.latitude,
+                            longitude: widget.property.longitude),
+                      ),
+                    );
+                  },
+                  child: const Text("View Area"),
+                ),
+                // Add Edit Property button for the property owner
+                if (widget.property.sellerID == _auth.currentUser!.uid)
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AddScreen(
+                            editMode: true,
+                            property: widget.property,
                           ),
-                        );
-                },
-                child: const Text("View Area")
-              )
-            ]
-          )
+                        ),
+                      );
+                    },
+                    child: Text('Edit Property'),
+                  ),
+              ],
+            ),
           ],
         ),
       ),

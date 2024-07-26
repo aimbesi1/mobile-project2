@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -38,6 +37,16 @@ class DatabaseHelper {
           .doc(_auth.currentUser!.uid)
           .update({"properties": properties});
 
+      return true;
+    } catch (e) {
+      debugPrint(e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> updateProperty(Property p) async {
+    try {
+      await _properties.doc(p.id).update(p.toJSON());
       return true;
     } catch (e) {
       debugPrint(e.toString());
@@ -170,6 +179,13 @@ class DatabaseHelper {
     }
   }
 
+  // Stream<QuerySnapshot> getConversations(String userId) {
+  //   return FirebaseFirestore.instance
+  //       .collection('conversations')
+  //       .where('participants', arrayContains: userId)
+  //       .orderBy('timestamp', descending: true)
+  //       .snapshots();
+  // }
   Stream<QuerySnapshot> getConversations(String userId) {
     return _conversations
         .where('participants', arrayContains: userId)

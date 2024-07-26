@@ -170,6 +170,13 @@ class DatabaseHelper {
     }
   }
 
+  // Stream<QuerySnapshot> getConversations(String userId) {
+  //   return FirebaseFirestore.instance
+  //       .collection('conversations')
+  //       .where('participants', arrayContains: userId)
+  //       .orderBy('timestamp', descending: true)
+  //       .snapshots();
+  // }
   Stream<QuerySnapshot> getConversations(String userId) {
     return _conversations
         .where('participants', arrayContains: userId)

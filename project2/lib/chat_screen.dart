@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:project2/messagebubble.dart';
 import 'database_helper.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -14,12 +16,16 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final DatabaseHelper dbHelper = DatabaseHelper();
   final TextEditingController _messageController = TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance; // Ensure you import FirebaseAuth
 
   @override
   Widget build(BuildContext context) {
+    final String currentUserId = _auth.currentUser!.uid;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Chat'),
+        centerTitle: true,
       ),
       body: Column(
         children: [
@@ -36,12 +42,14 @@ class _ChatScreenState extends State<ChatScreen> {
                   itemBuilder: (context, index) {
                     final message = messages[index];
                     final messageData = message.data() as Map<String, dynamic>;
-                    final senderName = messageData.containsKey('senderName') ? messageData['senderName'] : 'Unknown';
-                    final text = messageData.containsKey('text') ? messageData['text'] : '';
+                    final senderId = messageData['senderId'] ?? '';
+                    final text = messageData['text'] ?? '';
+                    final isMe = senderId == currentUserId;
 
-                    return ListTile(
-                      title: Text(senderName),
-                      subtitle: Text(text),
+                    return MessageBubble(
+                      senderId: senderId,
+                      text: text,
+                      isMe: isMe,
                     );
                   },
                 );

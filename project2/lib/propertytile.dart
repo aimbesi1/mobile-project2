@@ -31,7 +31,8 @@ class PropertyTile extends StatelessWidget {
             ),
           ),
           Container(
-            color: Theme.of(context).colorScheme.secondary,
+            // color: Theme.of(context).colorScheme.secondary,
+            padding: const EdgeInsets.all(8),
             child: Text(_property.name)
           ),
         ],

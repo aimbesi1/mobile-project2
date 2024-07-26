@@ -34,13 +34,14 @@ class PropertyPageState extends State<PropertyPage> {
     _fetchData();
   }
 
-  Future<void> _fetchData() async { 
+  Future<void> _fetchData() async {
     final propertyData = await FirebaseFirestore.instance
         .collection('properties')
         .doc(widget.property.id)
         .get();
     setState(() {
-      widget.property = Property.fromJson(propertyData.id, propertyData.data()!);
+      widget.property =
+          Property.fromJson(propertyData.id, propertyData.data()!);
     });
 
     final sellerData = await FirebaseFirestore.instance
@@ -56,70 +57,123 @@ class PropertyPageState extends State<PropertyPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(widget.property.name)),
-      body: Center(
-        child: Column(
-          children: [
-            Image.network(
-              widget.property.imageURL),
-            Row(children: [
-              Text("Price: \$${widget.property.sellPrice}"),
-              GestureDetector(
-                  onTap: () async {
-                    if (widget.property.sellerID != _auth.currentUser!.uid &&
-                        sellerName != null) {
-                      Conversation? conversation = await _dh.createConversation(
-                          widget.property.sellerID, sellerName!);
-                      if (conversation != null) {
-                        if (!context.mounted) return;
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                ChatScreen(conversationId: conversation.id),
-                          ),
-                        );
-                      }
-                    }
-                  },
-                  child: Container(
-                      color: Theme.of(context).colorScheme.secondary,
-                      child: Text("Seller: ${sellerName ?? "Loading"}")))
-            ]),
-
-            ButtonBar(
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => StreetViewScreen(
-                            latitude: widget.property.latitude,
-                            longitude: widget.property.longitude),
-                      ),
-                    );
-                  },
-                  child: const Text("View Area"),
-                ),
-                // Add Edit Property button for the property owner
-                if (widget.property.sellerID == _auth.currentUser!.uid)
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Image.network(widget.property.imageURL),
+              SizedBox(height: 16),
+              Text(
+                widget.property.name,
+                style: Theme.of(context).textTheme.headlineLarge,
+              ),
+              SizedBox(height: 8),
+              Text(
+                widget.property.address,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              SizedBox(height: 16),
+              ListTile(
+                leading: Icon(Icons.monetization_on),
+                title: Text("Price: \$${widget.property.sellPrice}"),
+              ),
+              ListTile(
+                leading: Icon(Icons.king_bed),
+                title: Text("Bedrooms: ${widget.property.bedrooms}"),
+              ),
+              ListTile(
+                leading: Icon(Icons.bathtub),
+                title: Text("Bathrooms: ${widget.property.bathrooms}"),
+              ),
+              ListTile(
+                leading: Icon(Icons.layers),
+                title: Text("Floors: ${widget.property.floors}"),
+              ),
+              ListTile(
+                leading: Icon(Icons.square_foot),
+                title: Text("Area: ${widget.property.area} sqft"),
+              ),
+              ListTile(
+                leading: Icon(widget.property.hasPool
+                    ? Icons.pool
+                    : Icons.do_not_disturb),
+                title:
+                    Text("Has Pool: ${widget.property.hasPool ? 'Yes' : 'No'}"),
+              ),
+              ListTile(
+                leading: Icon(widget.property.hasPatio
+                    ? Icons.deck
+                    : Icons.do_not_disturb),
+                title: Text(
+                    "Has Patio: ${widget.property.hasPatio ? 'Yes' : 'No'}"),
+              ),
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => AddScreen(
-                            editMode: true,
-                            property: widget.property,
+                          builder: (context) => StreetViewScreen(
+                            latitude: widget.property.latitude,
+                            longitude: widget.property.longitude,
                           ),
                         ),
                       );
                     },
-                    child: Text('Edit Property'),
+                    child: const Text("View Area"),
                   ),
-              ],
-            ),
-          ],
+                  if (widget.property.sellerID != _auth.currentUser!.uid &&
+                      sellerName != null)
+                    ElevatedButton(
+                      onPressed: () async {
+                        Conversation? conversation =
+                            await _dh.createConversation(
+                          widget.property.sellerID,
+                          sellerName!,
+                        );
+                        if (conversation != null) {
+                          if (!context.mounted) return;
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ChatScreen(conversationId: conversation.id),
+                            ),
+                          );
+                        }
+                      },
+                      child: Text("Contact Seller: ${sellerName ?? "Loading"}"),
+                    ),
+                  if (widget.property.sellerID == _auth.currentUser!.uid)
+                    ElevatedButton(
+                      onPressed: () async {
+                        final updatedProperty = await Navigator.push<Property>(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AddScreen(
+                              editMode: true,
+                              property: widget.property,
+                            ),
+                          ),
+                        );
+
+                        if (updatedProperty != null) {
+                          setState(() {
+                            widget.property = updatedProperty;
+                          });
+                        }
+                      },
+                      child: Text('Edit Property'),
+                    ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

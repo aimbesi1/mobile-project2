@@ -14,7 +14,7 @@ class StreetViewScreen extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Street View Init Demo'),
+          title: const Text('Look Around'),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () => Navigator.pop(context),
@@ -81,7 +81,7 @@ class StreetViewScreen extends StatelessWidget {
                  *  Set street view can allow user move to other panorama or not.
                  *  default setting is true
                  */
-                userNavigationEnabled: false,
+                userNavigationEnabled: true,
 
                 /**
                  *  Web not support

@@ -43,40 +43,44 @@ class HomePageState extends State<HomePage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Filter Properties'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              CheckboxListTile(
-                title: Text('Has Pool'),
-                value: _filterHasPool,
-                onChanged: (bool? value) {
-                  setState(() {
-                    _filterHasPool = value!;
-                  });
-                },
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              title: Text('Filter Properties'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  CheckboxListTile(
+                    title: Text('Has Pool'),
+                    value: _filterHasPool,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        _filterHasPool = value!;
+                      });
+                    },
+                  ),
+                  CheckboxListTile(
+                    title: Text('Has Patio'),
+                    value: _filterHasPatio,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        _filterHasPatio = value!;
+                      });
+                    },
+                  ),
+                ],
               ),
-              CheckboxListTile(
-                title: Text('Has Patio'),
-                value: _filterHasPatio,
-                onChanged: (bool? value) {
-                  setState(() {
-                    _filterHasPatio = value!;
-                  });
-                },
-              ),
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Apply'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                _applyFilters();
-              },
-            ),
-          ],
+              actions: <Widget>[
+                TextButton(
+                  child: Text('Apply'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _applyFilters();
+                  },
+                ),
+              ],
+            );
+          }
         );
       },
     );

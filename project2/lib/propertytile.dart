@@ -26,8 +26,8 @@ class PropertyTile extends StatelessWidget {
             flex: 2,
             child: Image.network(
               _property.imageURL!,
-              width: 100,
-              height: 100
+              width: 500,
+              height: 500,
             ),
           ),
           Container(

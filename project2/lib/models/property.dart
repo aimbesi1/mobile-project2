@@ -15,7 +15,7 @@ class Property {
   final int area;
   final bool hasPool;
   final bool hasPatio;
-  final String? imageURL;
+  final String imageURL;
 
   Property(
       {required this.id,
@@ -32,7 +32,7 @@ class Property {
       required this.area,
       required this.hasPool,
       required this.hasPatio,
-      this.imageURL
+      required this.imageURL
       });
 
   factory Property.fromJson(String id, Map<String, dynamic> data) {

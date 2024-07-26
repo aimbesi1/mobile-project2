@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_ui_storage/firebase_ui_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:project2/addproperty.dart';
 import 'package:project2/chat_screen.dart';
 import 'package:project2/database_helper.dart';
 import 'package:project2/models/conversation.dart';
@@ -10,7 +11,7 @@ import 'package:project2/models/property.dart';
 import 'package:project2/tour.dart';
 
 class PropertyPage extends StatefulWidget {
-  late final Property property;
+  late Property property;
 
   PropertyPage(Property p, {super.key}) {
     property = p;
@@ -30,10 +31,18 @@ class PropertyPageState extends State<PropertyPage> {
   @override
   void initState() {
     super.initState();
-    _fetchSellerName();
+    _fetchData();
   }
 
-  Future<void> _fetchSellerName() async {
+  Future<void> _fetchData() async { 
+    final propertyData = await FirebaseFirestore.instance
+        .collection('properties')
+        .doc(widget.property.id)
+        .get();
+    setState(() {
+      widget.property = Property.fromJson(propertyData.id, propertyData.data()!);
+    });
+
     final sellerData = await FirebaseFirestore.instance
         .collection('users')
         .doc(widget.property.sellerID)
@@ -50,7 +59,8 @@ class PropertyPageState extends State<PropertyPage> {
       body: Center(
         child: Column(
           children: [
-            Image.network(widget.property.imageURL!),
+            Image.network(
+              widget.property.imageURL),
             Row(children: [
               Text("Price: \$${widget.property.sellPrice}"),
               GestureDetector(
@@ -78,6 +88,16 @@ class PropertyPageState extends State<PropertyPage> {
 
           ButtonBar(
             children: [
+              widget.property.sellerID == _auth.currentUser!.uid ? ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => AddScreen(editMode: true, property: widget.property))
+                        );
+                    },
+                    child: const Text("Edit Property")
+                  )
+                 : const Placeholder(),
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(

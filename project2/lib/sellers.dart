@@ -74,7 +74,7 @@ class SellerPageState extends State<SellerPage> {
                     onPressed: () {
                       Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const AddScreen(editMode: true))
+                          MaterialPageRoute(builder: (context) => const AddScreen(editMode: false))
                         );
                     },
                     child: const Text("Add a Property")

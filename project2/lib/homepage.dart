@@ -39,6 +39,7 @@ class HomePageState extends State<HomePage> {
             IconButton(
                 onPressed: () async {
                   await _auth.signOut();
+                  if (!context.mounted) return;
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => const LoginForm()));
                 },
@@ -102,11 +103,6 @@ class HomePageState extends State<HomePage> {
                 ])
               ],
             ),
-          ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {},
-            tooltip: 'Add Item',
-            child: const Icon(Icons.add),
           ),
         ));
   }

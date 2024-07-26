@@ -45,6 +45,19 @@ class DatabaseHelper {
     }
   }
 
+  Future<bool> updateProperty(String id, Property p) async {
+    try {
+      await _properties.doc(id).update(
+        p.toJSON()
+      );
+
+      return true;
+    } catch (e) {
+      debugPrint(e.toString());
+      return false;
+    }
+  }
+
   // static Map<String, UserModel> userMap = {};
   // static Map<String, Conversation> convoMap = {};
   // static Map<String, Message> messageMap = {};

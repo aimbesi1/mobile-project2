@@ -184,10 +184,15 @@ class AddScreenState extends State<AddScreen> {
                         final longitude = coords[0].longitude;
                         final latitude = coords[0].latitude;
 
+                        User? currentUser = _auth.currentUser;
+                        if (currentUser == null) {
+                          throw Exception("User not logged in");
+                        }
+
                         Property propertyData = Property(
-                          id: widget.editMode ? widget.property!.id : "",
+                          id: widget.editMode ? widget.property?.id ?? "" : "",
                           name: _titleController.text,
-                          sellerID: _auth.currentUser!.uid,
+                          sellerID: currentUser.uid,
                           sellPrice: int.parse(_priceController.text),
                           address: _addressController.text,
                           longitude: longitude,

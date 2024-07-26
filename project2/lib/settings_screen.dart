@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
+  final Function(String) updateTheme;
+
+  const SettingsScreen({Key? key, required this.updateTheme}) : super(key: key);
+
   @override
   _SettingsScreenState createState() => _SettingsScreenState();
 }
@@ -28,6 +32,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() {
       _currentTheme = theme;
     });
+    widget.updateTheme(theme);
   }
 
   @override

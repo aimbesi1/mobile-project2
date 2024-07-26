@@ -4,6 +4,7 @@ import 'package:project2/auth.dart';
 import 'package:project2/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:project2/homepage.dart';
+import 'package:project2/settings_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'app_theme.dart';
 
@@ -24,6 +25,12 @@ class RealEstateApp extends StatefulWidget {
 class _RealEstateAppState extends State<RealEstateApp> {
   ThemeData _theme = AppTheme.lightTheme;
 
+  void updateTheme(String themeName) {
+    setState(() {
+      _theme = themeName == 'light' ? AppTheme.lightTheme : AppTheme.darkTheme;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -33,9 +40,7 @@ class _RealEstateAppState extends State<RealEstateApp> {
   _loadTheme() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String themeName = prefs.getString('theme') ?? 'light';
-    setState(() {
-      _theme = themeName == 'light' ? AppTheme.lightTheme : AppTheme.darkTheme;
-    });
+    updateTheme(themeName);
   }
 
   @override
@@ -56,6 +61,7 @@ class _RealEstateAppState extends State<RealEstateApp> {
         },
         '/auth': (context) => const LoginForm(),
         '/home': (context) => const HomePage(),
+        '/settings': (context) => SettingsScreen(updateTheme: updateTheme),
       },
     );
   }

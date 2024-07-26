@@ -109,12 +109,9 @@ class HomePageState extends State<HomePage> {
             ),
             IconButton(
               icon: Icon(Icons.settings),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SettingsScreen()),
-                );
-              },
+               onPressed: () {
+                Navigator.pushNamed(context, '/settings');
+                },
             ),
             IconButton(
               onPressed: () async {

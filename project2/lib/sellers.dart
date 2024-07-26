@@ -7,7 +7,6 @@ import 'package:project2/propertytile.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
-// Placeholder widget for home page
 class SellerPage extends StatefulWidget {
   const SellerPage({super.key});
 

@@ -86,32 +86,39 @@ class PropertyPageState extends State<PropertyPage> {
                       child: Text("Seller: ${sellerName ?? "Loading"}")))
             ]),
 
-          ButtonBar(
-            children: [
-              widget.property.sellerID == _auth.currentUser!.uid ? ElevatedButton(
+            ButtonBar(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => StreetViewScreen(
+                            latitude: widget.property.latitude,
+                            longitude: widget.property.longitude),
+                      ),
+                    );
+                  },
+                  child: const Text("View Area"),
+                ),
+                // Add Edit Property button for the property owner
+                if (widget.property.sellerID == _auth.currentUser!.uid)
+                  ElevatedButton(
                     onPressed: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => AddScreen(editMode: true, property: widget.property))
-                        );
-                    },
-                    child: const Text("Edit Property")
-                  )
-                 : const Placeholder(),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                StreetViewScreen(latitude: widget.property.latitude, longitude: widget.property.longitude)
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AddScreen(
+                            editMode: true,
+                            property: widget.property,
                           ),
-                        );
-                },
-                child: const Text("View Area")
-              )
-            ]
-          )
+                        ),
+                      );
+                    },
+                    child: Text('Edit Property'),
+                  ),
+              ],
+            ),
           ],
         ),
       ),

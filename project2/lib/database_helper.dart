@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -183,6 +182,13 @@ class DatabaseHelper {
     }
   }
 
+  // Stream<QuerySnapshot> getConversations(String userId) {
+  //   return FirebaseFirestore.instance
+  //       .collection('conversations')
+  //       .where('participants', arrayContains: userId)
+  //       .orderBy('timestamp', descending: true)
+  //       .snapshots();
+  // }
   Stream<QuerySnapshot> getConversations(String userId) {
     return _conversations
         .where('participants', arrayContains: userId)

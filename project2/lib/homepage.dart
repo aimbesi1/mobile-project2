@@ -164,7 +164,7 @@ class HomePageState extends State<HomePage> {
             ),
             actions: <Widget>[
               TextButton(
-                child: Text('Apply'),
+                child: const Text('Apply'),
                 onPressed: () {
                   setState(() {
                     
@@ -174,7 +174,7 @@ class HomePageState extends State<HomePage> {
                 },
               ),
               TextButton(
-                child: Text('Remove Filter'),
+                child: const Text('Remove Filter'),
                 onPressed: () {
                   Navigator.of(context).pop();
                   _removeFilters();
@@ -240,11 +240,11 @@ class HomePageState extends State<HomePage> {
           title: const Text("Home Page"),
           actions: [
             IconButton(
-              icon: Icon(Icons.filter_list),
+              icon: const Icon(Icons.filter_list),
               onPressed: _showFilterDialog,
             ),
             IconButton(
-              icon: Icon(Icons.settings),
+              icon: const Icon(Icons.settings),
               onPressed: () {
                 Navigator.pushNamed(context, '/settings');
               },
@@ -252,6 +252,7 @@ class HomePageState extends State<HomePage> {
             IconButton(
               onPressed: () async {
                 await _auth.signOut();
+                if (!context.mounted) return;
                 Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (context) => const LoginForm()));
               },
@@ -272,7 +273,7 @@ class HomePageState extends State<HomePage> {
                     ),
                   );
                 },
-                child: Text("Conversations"),
+                child: const Text("Conversations"),
               ),
               Expanded(
                 child: GridView.builder(

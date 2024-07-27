@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_google_street_view/flutter_google_street_view.dart';
 
 // We can only call the StreetView API so many times on the trial version.
+// Code + comments for FlutterGoogleStreetView widget from https://pub.dev/packages/flutter_google_street_view
 class StreetViewScreen extends StatelessWidget {
   final double latitude;
   final double longitude;

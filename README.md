@@ -18,4 +18,4 @@ This is a real estate simulation app that lets you manage properties and communi
 
 **WATCH THE VIDEO**
 
-
+https://youtu.be/5o9rZt9TuTo
